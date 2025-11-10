@@ -1,0 +1,42 @@
+const WEBHOOK_URL = "YOUR_URL";
+const SECRET_TOKEN = "YOUR_TOKEN";
+
+
+function setupTrigger() {
+  ScriptApp.getProjectTriggers().forEach(function(trigger) {
+    ScriptApp.deleteTrigger(trigger);
+  });
+
+  ScriptApp.newTrigger('checkNewMailAndTrigger')
+      .timeBased()
+      .everyMinutes(1)
+      .create();
+
+  Logger.log('Trigger has been successfully created');
+}
+
+function checkNewMailAndTrigger() {
+  if (GmailApp.getInboxUnreadCount() > 0) {
+    Logger.log('New mails were found. Sending Webhook....');
+    sendWebhookSignal();
+  } else {
+    Logger.log('No new lists were found.');
+  }
+}
+
+function sendWebhookSignal() {
+  const options = {
+    'method': 'post',
+    'headers': {
+      'Authorization': `Bearer ${SECRET_TOKEN}`
+    },
+    'muteHttpExceptions': true
+  };
+
+  try {
+    const response = UrlFetchApp.fetch(WEBHOOK_URL, options);
+    Logger.log(`Webhook has been sent. Answer code: ${response.getResponseCode()}`);
+  } catch (e) {
+    Logger.log(`Error: ${e.toString()}`);
+  }
+}

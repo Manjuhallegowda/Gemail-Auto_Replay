@@ -1,0 +1,15 @@
+﻿# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local env & logs
+venv/
+logs/
+*.log
+error.txt
+
+# Google OAuth secrets (DO NOT COMMIT)
+credentials.json
+token.json
