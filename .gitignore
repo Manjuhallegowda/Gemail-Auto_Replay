@@ -8,6 +8,7 @@ __pycache__/
 venv/
 logs/
 *.log
+.env
 
 # Google OAuth secrets (DO NOT COMMIT)
 credentials.json
