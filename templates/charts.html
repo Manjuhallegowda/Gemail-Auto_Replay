@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail Auto-Reply - Charts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-gray-800 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-xl font-bold">
+                Gmail Auto-Reply
+            </a>
+            <div class="flex items-center">
+                <a href="/" class="px-4">Home</a>
+                <a href="/charts" class="px-4">Charts</a>
+                <a href="/config" class="px-4">Configuration</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto mt-8">
+        <div class="bg-white p-8 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold mb-4">Daily Statistics</h2>
+            <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+                <canvas id="daily-chart"></canvas>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Replied Mails by Category</h2>
+                <div class="chart-container" style="position: relative; height:40vh; width:40vw">
+                    <canvas id="replied-pie-chart"></canvas>
+                </div>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Ignored Mails by Category</h2>
+                <div class="chart-container" style="position: relative; height:40vh; width:40vw">
+                    <canvas id="ignored-pie-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dailyChartCtx = document.getElementById('daily-chart').getContext('2d');
+        new Chart(dailyChartCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ daily_chart_labels | tojson }},
+                datasets: [{
+                    label: 'Replied Mails',
+                    data: {{ replied_chart_data | tojson }},
+                    backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Ignored Mails',
+                    data: {{ ignored_chart_data | tojson }},
+                    backgroundColor: 'rgba(239, 68, 68, 0.5)',
+                    borderColor: 'rgba(239, 68, 68, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        const repliedPieCtx = document.getElementById('replied-pie-chart').getContext('2d');
+        new Chart(repliedPieCtx, {
+            type: 'pie',
+            data: {
+                labels: {{ replied_pie_labels | tojson }},
+                datasets: [{
+                    data: {{ replied_pie_data | tojson }},
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(153, 102, 255, 0.5)',
+                        'rgba(255, 159, 64, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            }
+        });
+
+        const ignoredPieCtx = document.getElementById('ignored-pie-chart').getContext('2d');
+        new Chart(ignoredPieCtx, {
+            type: 'pie',
+            data: {
+                labels: {{ ignored_pie_labels | tojson }},
+                datasets: [{
+                    data: {{ ignored_pie_data | tojson }},
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(153, 102, 255, 0.5)',
+                        'rgba(255, 159, 64, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            }
+        });
+    </script>
+</body>
+</html>

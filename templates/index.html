@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail Auto-Reply</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-gray-800 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-xl font-bold">
+                Gmail Auto-Reply
+            </a>
+            <div class="flex items-center">
+                <div class="w-4 h-4 rounded-full {% if status == 'running' %}bg-green-500{% else %}bg-red-500{% endif %} mr-2"></div>
+                <a href="/" class="px-4">Home</a>
+                <a href="/charts" class="px-4">Charts</a>
+                <a href="/config" class="px-4">Configuration</a>
+                <form action="/start" method="post" class="px-4">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Start Script
+                    </button>
+                </form>
+                <a href="/" class="px-4">
+                    <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                        Refresh
+                    </button>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto mt-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Summary Statistics</h2>
+                <div class="flex justify-between items-center">
+                    <div class="text-center">
+                        <p class="text-4xl font-bold">{{ total_replied }}</p>
+                        <p class="text-gray-500">Replied Mails</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-4xl font-bold">{{ total_ignored }}</p>
+                        <p class="text-gray-500">Ignored Mails</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Recent Activity</h2>
+                {% if recent_replied %}
+                <div class="border-l-4 border-green-500 pl-4 mb-4">
+                    <p class="font-bold">Last Replied Mail:</p>
+                    <p>To: {{ recent_replied.to }}</p>
+                    <p>Subject: {{ recent_replied.subject }}</p>
+                </div>
+                {% endif %}
+                {% if recent_ignored %}
+                <div class="border-l-4 border-red-500 pl-4">
+                    <p class="font-bold">Last Ignored Mail:</p>
+                    <p>From: {{ recent_ignored.from }}</p>
+                    <p>Subject: {{ recent_ignored.subject }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            <div>
+                <h2 class="text-2xl font-bold mb-4">Replied Mails</h2>
+                <form action="/" method="get" class="mb-4">
+                    <input type="text" name="search_replied" placeholder="Search replied mails..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </form>
+                <div id="replied-mails" class="space-y-4">
+                    {% for mail in replied_mails %}
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-bold">To: {{ mail.to }}</h3>
+                            <span class="text-gray-500 text-sm">{{ mail.date }}</span>
+                        </div>
+                        <p class="text-gray-700 mt-2"><strong>Subject:</strong> {{ mail.subject }}</p>
+                        <p class="text-gray-600 mt-2"><strong>Reply:</strong> {{ mail.reply }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold mb-4">Ignored Mails</h2>
+                <form action="/" method="get" class="mb-4">
+                    <input type="text" name="search_ignored" placeholder="Search ignored mails..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </form>
+                <div id="ignored-mails" class="space-y-4">
+                    {% for mail in ignored_mails %}
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-bold">From: {{ mail.from }}</h3>
+                            <span class="text-gray-500 text-sm">{{ mail.date }}</span>
+                        </div>
+                        <p class="text-gray-700 mt-2"><strong>Subject:</strong> {{ mail.subject }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const successAlerts = document.querySelectorAll('.bg-green-100');
+        successAlerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        });
+
+        const errorAlerts = document.querySelectorAll('.bg-red-100');
+        errorAlerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

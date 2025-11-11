@@ -1,12 +1,13 @@
 import base64
 from email.mime.text import MIMEText
-from config import MAILTEMPLATE
+from ai_reply import generate_ai_reply
 from logger import get_logger
 from googleapiclient.errors import HttpError
+import config
 
 logger = get_logger(__name__)
 
-def mail_reply(message_id, receiver, references, subject, service, thread_id):
+def mail_reply(message_id, receiver, references, subject, service, thread_id, body):
     """
        Mail reply according to given details
 
@@ -16,8 +17,16 @@ def mail_reply(message_id, receiver, references, subject, service, thread_id):
            subject: Subject of the mail
            service: Authorized Gmail API service object
            thread_id: Thread ID
+           body: Body of the mail
        """
-    message = MIMEText(MAILTEMPLATE)
+    if config.USE_AI:
+        reply_content = generate_ai_reply(body)
+        if not reply_content:
+            reply_content = config.MAILTEMPLATE
+    else:
+        reply_content = config.MAILTEMPLATE
+
+    message = MIMEText(reply_content)
     if not subject.lower().startswith('re:'):
         message['Subject'] = f"Re: {subject}"
     else:
@@ -40,6 +49,8 @@ def mail_reply(message_id, receiver, references, subject, service, thread_id):
             body=create_message_request
         ).execute()
         logger.info(f'The automated reply was sent to: {receiver}, in a mail thread: {thread_id}')
+        return reply_content
 
     except HttpError as error:
         logger.warning(f"An error occurred during sending reply: {error}")
+        return None

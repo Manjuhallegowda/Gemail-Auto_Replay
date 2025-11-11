@@ -15,11 +15,6 @@ def setup_logger(name: str, log_level: str = "INFO") -> logging.Logger:
         Configured logger instance
     """
 
-    # Create logs directory if it doesn't exist
-    log_dir = "logs"
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-
     # Create logger
     logger = logging.getLogger(name)
 
@@ -42,9 +37,8 @@ def setup_logger(name: str, log_level: str = "INFO") -> logging.Logger:
         datefmt='%H:%M:%S'
     )
 
-    # Create file handler with timestamp in filename
-    timestamp = datetime.now().strftime('%Y%m%d')
-    log_filename = os.path.join(log_dir, f'logs_{timestamp}.log')
+    # Create file handler
+    log_filename = "app.log"
     file_handler = logging.FileHandler(log_filename, encoding='utf-8')
     file_handler.setLevel(logging.DEBUG)  # File gets all messages
     file_handler.setFormatter(file_formatter)
