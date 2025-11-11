@@ -13,3 +13,9 @@ ENV/
 
 # Flask
 instance/
+
+# Project secrets/artifacts
+logs/
+app.log
+credentials.json
+token.json
