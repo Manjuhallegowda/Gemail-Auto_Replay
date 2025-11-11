@@ -1,15 +1,15 @@
-﻿# Python
+# OS
+.DS_Store
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-
-# Local env & logs
+.venv/
 venv/
-logs/
-*.log
+ENV/
 .env
 
-# Google OAuth secrets (DO NOT COMMIT)
-credentials.json
-token.json
+# Flask
+instance/
